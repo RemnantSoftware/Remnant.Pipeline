@@ -7,55 +7,48 @@ namespace Remnant.Pipeline.Core
 {
 	internal class Connection
 	{
-		private readonly List<string> _eventPatterns;
-		private IPipelineStage _stage;
-		
+		private IPipelineStage _currentstage;
+		private readonly List<Type> _eventTypes;
 
 		public Connection(IPipeline pipeline)
 		{
 			Pipeline = pipeline;
-			_eventPatterns = new List<string>();
+			_eventTypes = new List<Type>();
 		}
 
 		public IPipeline Pipeline { get; private set; }
 
-		public void RaiseEvent(IEvent @event)
+		public void RaiseEvent(IPipelineStage stage, IEvent @event)
 		{
-			var stages = (Pipeline.Configuration as IPipelineConfigAccess).Stages.Where(s => s.Events.Any(e => e.GetType().Equals(@event.GetType())));
-
-			foreach (var stage in stages)
+			if (IsEventRegistered(stage, @event))
 			{
-				Pipeline.RaiseEvent(stage.Name, @event);
+				_currentstage = Pipeline.Configuration.Stages().FindStage(stage.Name);
+
+				if (_currentstage.FindEvent(@event.GetType()) == null)
+				{
+					_currentstage.ForEvent(@event);
+				}
+
+				Pipeline.RaiseEvent(_currentstage.Name, @event);
 			}
 		}
 
 		public void ForEvent<TEvent>() where TEvent : IEvent
 		{
-			_eventPatterns.Add(typeof(TEvent).FullName);
+			_eventTypes.Add(typeof(TEvent));
 		}
 
-		public void ForEvent(string eventNamePattern)
+		public void ForStage(string stage)
 		{
-			_eventPatterns.Add(eventNamePattern);
+			Pipeline.Configuration.Stages().RegisterStage(stage);
+
+			_currentstage = Pipeline.Configuration.Stages().FindStage(stage);
 		}
 
-		public bool IsEventRegistered(IEvent @event)
+		public bool IsEventRegistered(IPipelineStage stage, IEvent @event)
 		{
-			var patterns = from eventPattern in _eventPatterns
-										 where @event.GetType().FullName.StartsWith(eventPattern, StringComparison.OrdinalIgnoreCase)
-										 select eventPattern;
-
-			return (patterns.Any());
-		}
-
-		public IPipelineStage Stage
-		{
-			get { return _stage; }
-			set
-			{
-				_stage = value;
-				Pipeline.Configuration.Stages().RegisterStage(_stage.Name);
-			}
+			return Pipeline.Configuration.Stages().FindStage(stage.Name) != null &&
+			_eventTypes.Exists(e => e.FullName.Equals(@event.GetType().FullName, StringComparison.InvariantCultureIgnoreCase));
 		}
 	}
 }

@@ -6,8 +6,6 @@ namespace Remnant.Pipeline.Interfaces
 	{
 		IConnectorForEvent ForEvent<TEvent>() where TEvent : IEvent;
 
-		IConnectorForEvent ForEvent(string eventNamePattern);
-
 		/// <summary>
 		/// Connect one pipeline with another
 		/// </summary>

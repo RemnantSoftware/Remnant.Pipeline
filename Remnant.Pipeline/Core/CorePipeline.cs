@@ -261,10 +261,9 @@ namespace Remnant.Pipeline.Core
 			{
 				foreach (var connection in _connector.Connections)
 				{
-					if ((connection.Stage != null && connection.Stage == _currentStage) ||
-						connection.IsEventRegistered(@event))
+					if (connection.IsEventRegistered(_currentStage, @event))
 					{
-						connection.RaiseEvent(@event);
+						connection.RaiseEvent(_currentStage, @event);
 					}
 				}
 			}

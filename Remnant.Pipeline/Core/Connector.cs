@@ -9,28 +9,26 @@ namespace Remnant.Pipeline.Core
 		private readonly List<Connection> _connections = new List<Connection>();
 		private Connection _currentConnection;
 
-
-		public IConnectorForEvent ForStage(string stage)
+		public IConnectorForEvent ForStages(params string[] stages)
 		{
-			_currentConnection.Stage = new PipelineStage(stage); //??, _currentConnection.Pipeline);
+			foreach (var stage in stages)
+			{
+				_currentConnection.ForStage(stage);
+			}
+
 			return this;
 		}
 
 		public IConnectorForEvent ForEvent<TEvent>() where TEvent : IEvent
 		{
 			_currentConnection.ForEvent<TEvent>();
-			return this;
-		}
 
-		public IConnectorForEvent ForEvent(string eventNamePattern)
-		{
-			_currentConnection.ForEvent(eventNamePattern);
 			return this;
 		}
 
 		public List<Connection> IsEventRegistered(PipelineStage stage, IEvent @event)
 		{
-			return _connections.FindAll(conn => conn.IsEventRegistered(@event));
+			return _connections.FindAll(conn => conn.IsEventRegistered(stage, @event));
 		}
 
 		public IConnector Connect(IPipeline pipeline)

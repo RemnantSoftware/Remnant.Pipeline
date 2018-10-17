@@ -1,17 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyName>Remnant.Pipeline</AssemblyName>
-    <RootNamespace>Remnant.Pipeline</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net45;net46;net461;netstandard2.0;netcoreapp2.0</TargetFrameworks>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Version>1.0.3</Version>
+		<PostBuildEvent>xcopy $(OutDir)..\*.nupkg c:\remnant\packages\. /y</PostBuildEvent>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.8" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>Neill Verreynne</Authors>
+		<Company>Remnant Software</Company>
+		<Copyright>(c) by Neill Verreynne</Copyright>
+		<Description>Provides fluent assert functionality for exception and message handling.</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Remnant.Shield\Remnant.Shield\Remnant.Shield.csproj" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+		<DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;NET46;NET45</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="log4net" Version="2.0.8" />
+		<PackageReference Include="Remnant.Shield" Version="1.0.0" />
+	</ItemGroup>
+
 
 </Project>

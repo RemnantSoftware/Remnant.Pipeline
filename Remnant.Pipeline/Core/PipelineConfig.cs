@@ -118,6 +118,15 @@ namespace Remnant.Pipeline.Core
 			return this;
 		}
 
+		IPipelineStage IStages.FindStage(string name)
+		{
+			var stage = _stages.Find(s => s.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
+			//Shield.AgainstNull(stage, nameof(stage)).Raise();
+
+			return stage;
+		}
+
 		#endregion
 
 		#region IRegisterObserver

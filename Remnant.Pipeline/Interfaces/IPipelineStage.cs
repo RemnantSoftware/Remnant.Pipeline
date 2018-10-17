@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System;
 
 namespace Remnant.Pipeline.Interfaces
 {
@@ -28,5 +29,19 @@ namespace Remnant.Pipeline.Interfaces
 		/// <param name="event"></param>
 		/// <returns></returns>
 		IPipelineStage ForEvent(IEvent @event);
+
+		/// <summary>
+		/// Find event
+		/// </summary>
+		/// <typeparam name="TEvent"></typeparam>
+		/// <returns></returns>
+		IEvent FindEvent<TEvent>() where TEvent : IEvent;
+
+		/// <summary>
+		/// Find event
+		/// </summary>
+		/// <param name="eventType"></param>
+		/// <returns></returns>
+		IEvent FindEvent(Type @eventType);
 	}
 }

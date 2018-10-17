@@ -22,6 +22,13 @@ namespace Remnant.Pipeline.Interfaces
 		IRegisterStage RegisterStage(string name);
 
 		/// <summary>
+		/// Find stage
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		IPipelineStage FindStage(string name);
+
+		/// <summary>
 		/// Configure observers
 		/// </summary>
 		/// <returns></returns>
